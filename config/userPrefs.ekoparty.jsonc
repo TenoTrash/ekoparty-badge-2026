@@ -1,0 +1,17 @@
+{
+  // Ekoparty Badge factory defaults for prototype builds.
+  // Do not store the production channel PSK in this repository.
+  "USERPREFS_CONFIG_LORA_REGION": "meshtastic_Config_LoRaConfig_RegionCode_ANZ",
+  "USERPREFS_LORACONFIG_MODEM_PRESET": "meshtastic_Config_LoRaConfig_ModemPreset_MEDIUM_FAST",
+  "USERPREFS_CONFIG_DEVICE_ROLE": "meshtastic_Config_DeviceConfig_Role_CLIENT_MUTE",
+  "USERPREFS_CONFIG_DISPLAY_ENABLE_MESSAGE_BUBBLES": "true",
+  "USERPREFS_CONFIG_LORA_IGNORE_MQTT": "true",
+  "USERPREFS_CONFIG_GPS_MODE": "meshtastic_Config_PositionConfig_GpsMode_NOT_PRESENT",
+  "USERPREFS_MQTT_ENABLED": "0",
+  "USERPREFS_CHANNEL_0_UPLINK_ENABLED": "false",
+  "USERPREFS_CHANNEL_0_DOWNLINK_ENABLED": "false",
+  "USERPREFS_TZ_STRING": "ART3",
+  "USERPREFS_CANNED_MESSAGES": "Aguante EKOPARTY!|Test|Copiado|Holaaa|Chau|Si|No|Ok|My crime is that of curiosity|Break the logic|Embrace the caos",
+  "USERPREFS_RINGTONE_NAG_SECS": "0",
+  "USERPREFS_RINGTONE_RTTTL": "eko:d=16,o=6,b=300:e,32p,a"
+}

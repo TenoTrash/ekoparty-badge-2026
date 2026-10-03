@@ -1,0 +1,45 @@
+{
+  "build": {
+    "arduino": {
+      "ldscript": "nrf52840_s140_v7.ld"
+    },
+    "bootloader": {
+      "settings_addr": "0xFF000"
+    },
+    "bsp": {
+      "name": "adafruit"
+    },
+    "core": "nRF5",
+    "cpu": "cortex-m4",
+    "extra_flags": "-DARDUINO_EKOPARTY_BADGE_V1 -DNRF52840_XXAA",
+    "f_cpu": "64000000L",
+    "hwids": [["0xCAFE", "0xE001"]],
+    "mcu": "nrf52840",
+    "softdevice": {
+      "sd_flags": "-DS140",
+      "sd_fwid": "0x0123",
+      "sd_name": "s140",
+      "sd_version": "7.3.0"
+    },
+    "usb_product": "Ekoparty Badge v1",
+    "variant": "ekoparty_badge_v1"
+  },
+  "connectivity": ["bluetooth"],
+  "debug": {
+    "jlink_device": "nRF52840_xxAA",
+    "openocd_target": "nrf52840-mdk-rs",
+    "svd_path": "nrf52840.svd"
+  },
+  "frameworks": ["arduino"],
+  "name": "Ekoparty Badge v1",
+  "upload": {
+    "maximum_ram_size": 248832,
+    "maximum_size": 815104,
+    "protocol": "jlink",
+    "protocols": ["jlink", "nrfjprog", "stlink", "cmsis-dap"],
+    "require_upload_port": false,
+    "speed": 115200
+  },
+  "url": "https://github.com/marsfactory/ekoparty-badge-2026",
+  "vendor": "Ekoparty"
+}
