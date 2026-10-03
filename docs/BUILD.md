@@ -26,6 +26,7 @@ Clonar EKOBOOT como directorio hermano e inicializar sus submódulos:
 cd ..
 git clone https://github.com/marsfactory/eko-bootloader.git
 cd eko-bootloader
+git checkout ekoboot-v1.0.0
 git submodule update --init
 python3 -m venv .venv
 .venv/bin/pip install intelhex adafruit-nrfutil
@@ -33,7 +34,7 @@ cd ../ekoparty-badge-2026
 scripts/build-ekoparty-bootloader.sh
 ```
 
-El script crea `dist/ekoparty_badge_v1/EKO_FIRST_FLASH.hex` y su suma SHA-256. Incluye MBR, S140, EKOBOOT y UICR; **no** incluye la aplicación. Antes de programar por SWD, identificar el nRF52840, respaldar flash y UICR si el chip tiene datos, borrar cuando corresponda y verificar la escritura por lectura. Para comprobar una imagen local:
+El tag `ekoboot-v1.0.0` fija el código de la imagen distribuida. El script crea `dist/ekoparty_badge_v1/EKO_FIRST_FLASH.hex` y su suma SHA-256; el resultado esperado tiene SHA-256 `cd40eedc1d5846b3adb468fd5b130758eac7001bf56fb7e4509746030626ed32`. Incluye MBR, S140, EKOBOOT y UICR; **no** incluye la aplicación. Antes de programar por SWD, identificar el nRF52840, respaldar flash y UICR si el chip tiene datos, borrar cuando corresponda y verificar la escritura por lectura. Para comprobar una imagen local:
 
 ```bash
 scripts/verify-ekoparty-first-flash.py \
