@@ -42,8 +42,10 @@ scripts/verify-ekoparty-first-flash.py \
   --softdevice bin/s140_nrf52_7.3.0_softdevice.hex
 ```
 
-`P0.17` es el botón DFU, aunque el PCB lo rotule `nRF_RESET`; `P0.18/nRESET` no está conectado. Con el botón pulsado al alimentar el badge aparece la unidad USB `EKOBOOT`. Copiar el UF2 de `ekoparty_badge_v1` a esa unidad y esperar el reinicio. El toque serie a 1200 baudios entra en un modo DFU temporal sólo CDC y no expone la unidad UF2.
+`P0.17` es el botón DFU, aunque el PCB lo rotule `nRF_RESET`; `P0.18/nRESET` no está conectado. Para abrir la unidad USB `EKOBOOT`, poné el interruptor en **OFF**, conectá USB-C con `nRF_RESET` presionado y mové el interruptor a **ON** sin soltar el botón. Soltalo cuando aparezca `EKOBOOT`, copiá allí el UF2 de `ekoparty_badge_v1` y esperá el reinicio. El toque serie a 1200 baudios entra en un modo DFU temporal sólo CDC y no expone la unidad UF2.
 
 ## Verificar una release
 
 Descargar todos sus archivos en un mismo directorio y ejecutar `sha256sum -c SHA256SUMS` en Linux o `shasum -a 256 -c SHA256SUMS` en macOS. El `BUILD_INFO.txt` indica el commit de origen y debe declarar `git_state=clean`. Después de cargar el UF2, consultar `BADGE → Acerca de` para comprobar la versión.
+
+Para incorporar una **versión nueva de la base Meshtastic** al código del badge, seguí el procedimiento de portado en [DEV_NOTES.md](DEV_NOTES.md). Ese trabajo es distinto de cargar por UF2 una nueva versión ya compilada para `ekoparty_badge_v1`.

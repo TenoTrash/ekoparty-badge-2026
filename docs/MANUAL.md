@@ -1,55 +1,100 @@
-# Manual de uso del Ekoparty Badge
+# Ekoparty Badge 2026
 
-![Ekoparty Badge](../badge-hardware/badge-top.jpeg)
+El Ekoparty Badge es un nodo Meshtastic con radio LoRa. Se conecta al teléfono por Bluetooth para escribir mensajes y configurar el dispositivo, pero sigue recibiendo y enviando mensajes por LoRa sin el teléfono conectado.
 
-El Ekoparty Badge es un nodo Meshtastic con radio LoRa, conexión Bluetooth, pantalla OLED, buzzer, seis LEDs decorativos
-traseros y un pixel independiente de estado. Puede intercambiar mensajes con otros nodos compatibles sin depender de
-Internet ni de una red celular.
+**[Abrir la guía web completa](https://marsfactory.github.io/ekoparty-badge-2026/)** · [Firmware y versiones](https://github.com/marsfactory/ekoparty-badge-2026/releases) · [Código del proyecto](https://github.com/marsfactory/ekoparty-badge-2026)
 
-Este manual corresponde al PCB `ekoparty_badge_v1`.
+![Ilustración del Ekoparty Badge](web/assets/PORTADA.png)
 
-## 1. Inicio rápido
+## Conocé tu badge
 
-1. Encender o alimentar el badge y esperar aproximadamente 12 segundos mientras se reproduce la intro.
-2. Escanear el QR que aparece a continuación para abrir el manual web del proyecto.
-3. Instalar y abrir la aplicación oficial Meshtastic en el teléfono.
-4. Buscar dispositivos Bluetooth cercanos y seleccionar el badge.
-5. Si se solicita pairing, ingresar o confirmar el PIN de seis dígitos que aparece en la OLED.
-6. Esperar a que el status LED quede verde fijo: indica que la aplicación está conectada.
-7. Desde la aplicación ya se pueden leer nodos y enviar mensajes broadcast o directos.
+El PCB `ekoparty_badge_v1` usa un nRF52840, radio SX1262, pantalla OLED, un botón de navegación, USB-C, buzzer, seis LEDs traseros y un pixel independiente de estado. Se alimenta con una batería recargable 18650 o por USB.
 
-Durante la intro inicial de arranque el badge no acepta pairing Bluetooth. Esperar a que termine antes de intentar
-conectarlo.
+### Frente
 
-## 2. Controles y pantalla
+![Vista frontal del badge con referencias numeradas del 1 al 5](web/assets/TOP-REFERENCE.png)
 
-El botón principal controla la navegación:
+1. **Botón de navegación:** una pulsación corta despierta la OLED o avanza de pantalla; una larga abre menús y confirma opciones. Una pulsación muy prolongada solicita el apagado por software.
+2. **Pixel de estado:** muestra Bluetooth, mensajes recibidos y batería crítica. Pulsa azul cuando Bluetooth está disponible, queda verde tenue al conectar el teléfono, da dos destellos ámbar por un mensaje de canal y cuatro verdes por uno directo. La alerta roja indica batería crítica.
+3. **Pantalla OLED:** muestra el estado de Meshtastic, los mensajes y los menús. Se apaga tras unos 10 minutos de inactividad y se despierta con el botón o al recibir un mensaje.
+4. **Interruptor OFF/ON:** hacia la izquierda corta la alimentación; hacia la derecha enciende el badge.
+5. **Puerto USB-C:** permite alimentar y cargar el badge, usar la conexión serial y copiar actualizaciones UF2 mediante EKOBOOT.
 
-| Acción                                    | Resultado                                                       |
-| ----------------------------------------- | --------------------------------------------------------------- |
-| Pulsación corta con la pantalla apagada   | Despierta la OLED; esa primera pulsación no cambia de pantalla. |
-| Pulsación corta con la pantalla encendida | Avanza al siguiente frame de Meshtastic.                        |
-| Pulsación larga en el frame Ekoparty      | Abre el menú local `BADGE`.                                     |
-| Pulsación larga en el frame QR            | No realiza ninguna acción especial.                             |
-| Pulsación corta dentro de un menú         | Recorre las opciones.                                           |
-| Pulsación larga dentro de un menú         | Confirma la opción seleccionada.                                |
+### Dorso
 
-La OLED permanece encendida durante 10 minutos por defecto después de una interacción o mensaje. El tiempo puede
-cambiarse desde la configuración de pantalla de Meshtastic mediante `display.screen_on_secs`.
+![Vista posterior del badge con referencias numeradas del 6 al 17](web/assets/BACK-REFERENCE.png)
 
-Los frames normales de Meshtastic muestran mensajes, nodos, estado del dispositivo, radio y Bluetooth. El frame
-Ekoparty agrega la animación elegida y oculta su barra inferior para aprovechar toda la pantalla; una pulsación corta
-sigue avanzando normalmente al siguiente frame.
+6. **Backlights:** seis LEDs decorativos que siguen la animación elegida. Son independientes del pixel de estado.
+7. **Buzzer:** emite avisos de mensajes y sonidos de navegación, según la configuración.
+8. **Portapilas 18650:** aloja la batería recargable. Respetá la polaridad indicada: positivo abajo y negativo arriba.
+9. **Puerto SWD:** conexión de programación para el primer flash o la recuperación del bootloader; no se usa en una actualización UF2 normal.
+10. **Botón DFU (`nRF_RESET`):** para entrar en EKOBOOT, apagá el badge, mantené presionado este botón mientras conectás el USB-C y encendé el badge sin soltarlo. Soltalo cuando aparezca la unidad `EKOBOOT` en la computadora.
+11. **Microcontrolador nRF52840:** ejecuta el firmware y proporciona Bluetooth.
+12. **Antena Bluetooth:** antena del enlace entre badge y teléfono.
+13. **Conector para antena externa:** para usarlo, primero hay que mover el puente de `R19` a `R21`; ver [Conexión de antena externa](#conexión-de-antena-externa).
+14. **Antena LoRa integrada:** antena de radio incorporada al PCB.
+15. **Módulo LoRa Ai-Thinker Ra-01SH:** integra la radio SX1262 usada para la red mesh.
+16. **Botón LOCKED:** desbloquea el módulo de carga en casos específicos; no hace falta pulsarlo durante el uso habitual.
+17. **Indicador de carga:** rojo mientras carga la batería y azul cuando está cargada.
 
-Después del frame animado aparece, por defecto, el QR de `https://fabricamarciana.com/eko`. Al finalizar la intro
-automática, el badge enfoca directamente ese QR. Desde allí, una pulsación corta recorre los nodos favoritos si existen
-y luego vuelve al primer frame de Meshtastic; sin favoritos, vuelve directamente al primer frame. Si el manual está
-oculto desde el menú local, la intro termina en el frame animado y el QR no forma parte de la navegación.
+Comprobá la polaridad de la batería y el estado de la antena antes de encenderlo. No transmitas con la antena dañada o desconectada.
 
-## 3. Menú local BADGE
+## Primer Inicio
 
-Este menú sólo se abre con una pulsación larga mientras está visible el frame Ekoparty. Mientras permanece abierto, la
-pantalla usa fondo negro y no dibuja animaciones detrás. `Volver` es siempre la primera opción.
+1. Mové el interruptor a **ON** y esperá unos 12 segundos a que termine la intro. El QR de la OLED abre esta guía.
+2. Instalá la [aplicación oficial Meshtastic](https://meshtastic.org/) en tu teléfono, activá Bluetooth y abrí la app.
+
+   ![Aplicación oficial Meshtastic en la tienda de Android](web/assets/app/meshapp.png)
+
+3. En **Connection**, elegí **Bluetooth** y pulsá **Scan for Bluetooth devices**. Para reconocer tu nodo, avanzá con pulsaciones cortas del botón del badge hasta la pantalla **Home**. Compará su identificador corto con la lista de la app (por ejemplo, `E001` en `E001_d8aa`) y seleccioná el dispositivo.
+
+   ![Búsqueda de nodos Bluetooth en la app](web/assets/app/pairing/escanear-bluetooh.jpeg)
+
+   ![Pantalla Home del badge con nombre e identificador corto](web/assets/mesh-base/home.png)
+
+4. Leé el PIN que aparece en la OLED e ingresalo en el teléfono.
+5. Esperá la sincronización. El pixel de estado queda **verde tenue fijo** mientras el teléfono está conectado. Si falla, comprobá que Bluetooth esté encendido, cerrá y reabrí la app, y repetí la búsqueda. El PIN normalmente se pide una sola vez. También podés conectar el badge al teléfono con un cable USB-C de datos y elegir **USB** en **Connection**, si el teléfono admite esa conexión.
+
+Las capturas de esta guía corresponden a Android; en iPhone o en otras versiones de la app algunos controles pueden verse distintos. Si no aparece el badge, esperá al final de la intro, acercá el teléfono y repetí la búsqueda.
+
+## Personalizá el nombre de tu badge
+
+Con el badge conectado a la app Meshtastic:
+
+1. Abrí la pestaña **Settings** (engranaje) y entrá en **User**.
+
+   ![Pestaña Settings de Meshtastic con la opción User](web/assets/app/settings.jpeg)
+
+2. Cambiá **Long Name** (nombre largo) y **Short Name** (nombre corto) como prefieras. Podés incluir emojis en el nombre largo 🙂. Pulsá **Save** para guardar.
+
+   ![Pantalla User con los campos Long Name y Short Name](web/assets/app/change-name.jpeg)
+
+## Cómo funciona la red
+
+- **Bluetooth** conecta el teléfono con *tu* badge. **LoRa** conecta el badge con otros nodos sin Internet ni datos móviles.
+- Un **canal** es una conversación compartida. Los participantes necesitan una configuración compatible.
+- Un **mensaje directo** se dirige a un nodo concreto. Puede tardar en estar disponible hasta que ambos nodos intercambien información.
+
+Para probar la red desde la app, abrí **Conversations**, elegí un canal compartido, escribí en **Type a message** y enviá. La lista **Nodes** muestra los nodos que tu badge ha escuchado. La [guía web](https://marsfactory.github.io/ekoparty-badge-2026/#mensajes-app) incluye capturas del envío por canal y del mensaje directo.
+
+## Enviar una frase usando sólo el badge
+
+Con pulsaciones cortas recorrés pantallas u opciones; con una pulsación larga abrís el menú de la pantalla actual o confirmás. La primera pulsación corta, si la OLED estaba apagada, sólo la despierta.
+
+1. Avanzá hasta la pantalla **Messages** y mantené pulsado el botón.
+2. Si hay mensajes, elegí **Reply → With Preset**. Si aún no hay conversaciones, abrí la opción de mensaje predefinido nuevo.
+3. Comprobá el destino en la línea `To:`. `#` indica un canal y `@` un nodo; **[Select Destination]** permite cambiarlo.
+4. Recorré las frases, elegí una y mantené pulsado para enviarla. La pantalla muestra **Sending...**.
+
+![Frase Aguante EKOPARTY seleccionada para un canal](web/assets/mandar-msg/aguante-eko.png)
+
+El firmware incluye frases como `Aguante EKOPARTY!`, `Test` y `Copiado`. El teléfono no necesita estar conectado para enviarlas. El [procedimiento ilustrado](https://marsfactory.github.io/ekoparty-badge-2026/#sin-telefono) muestra las pantallas paso a paso.
+
+## Tu Badge
+
+El menú **BADGE** se abre con una pulsación larga **desde la pantalla animada Ekoparty**. Una pulsación larga en la pantalla del QR no abre ninguna opción especial. Dentro de un menú, una pulsación corta recorre las opciones y una larga confirma. Los menús se muestran sobre fondo negro, sin animaciones detrás, y **Volver** es siempre la primera opción.
+
+![Menú BADGE en la pantalla OLED](web/assets/menu-badge/menu-badge.png)
 
 ```text
 BADGE
@@ -63,246 +108,151 @@ BADGE
 └─ Restaurar
 ```
 
-Las preferencias de animación, backlights, visibilidad del manual y status LED quedan guardadas localmente y sobreviven
-a los reinicios y a una actualización normal por UF2.
+Las preferencias de animación, backlights, visibilidad del QR y status LED quedan guardadas en el badge: sobreviven a los reinicios y a una actualización UF2 normal. Al confirmar un cambio, el menú se cierra y vuelve a la pantalla animada Ekoparty. **Acerca de** permanece abierto hasta que elegís **Volver**.
 
-Al confirmar cualquiera de esas preferencias, el menú se cierra y vuelve directamente al frame Ekoparty. `Acerca de`
-permanece abierto para recorrer los créditos; desde allí, `Volver` regresa al menú principal.
+### Animación idle
 
-### Animacion idle
+Esta opción cambia la pantalla Ekoparty y el patrón de los seis LEDs traseros:
 
-Selecciona la animación del frame Ekoparty y el patrón correspondiente de los seis LEDs traseros:
+| Opción | Aspecto |
+| --- | --- |
+| **Ojo** | El brillo sube y baja suavemente mientras recorre la paleta de colores. Es la opción predeterminada. |
+| **Logo glitch** | Colores festivos con transiciones suaves entre distintas distribuciones de color. |
+| **Calavera** | Rojo profundo con cambios breves en naranja y amarillo. |
+| **Risa** | Ámbar con cambios breves en rosa, rojo y violeta. |
+| **Mesh ARG** | Usa el mismo patrón de luces y colores que **Logo glitch**. |
 
-| Opción        | Aspecto general                                                                                  |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| `Ojo`         | Respiración uniforme que recorre lentamente toda la paleta.                                      |
-| `Logo glitch` | Paleta festiva con respiración y transiciones suaves entre distribuciones de colores diferentes. |
-| `Calavera`    | Respiración rojo profundo con glitches ocasionales de alerta en naranja y amarillo.              |
-| `Risa`        | Respiración ámbar uniforme interrumpida por glitches rosas, rojos y violetas.                    |
-| `Mesh ARG`    | Usa el mismo patrón de backlights, paleta y transiciones suaves que `Logo glitch`.               |
+### Backlights y QR
 
-`Ojo` es la opción predeterminada.
+En **Backlights** podés elegir **Apagados**, **Tenues** (aproximadamente un cuarto del brillo máximo) o **Brillantes** (brillo máximo, valor predeterminado). **Apagados** también mantiene las luces traseras apagadas durante la intro. Estas luces no reaccionan a los mensajes y son independientes del pixel de estado.
 
-### Backlights
-
-- `Apagados`: apaga los seis LEDs, también durante una reproducción de la intro.
-- `Tenues`: reproduce los patrones con aproximadamente un cuarto del brillo máximo.
-- `Brillantes`: reproduce los patrones con el brillo máximo. Es la opción predeterminada.
-
-Los backlights no reaccionan a los mensajes. Esta opción tampoco apaga el pixel independiente de estado.
-
-### Manual
-
-- `Ocultar`: retira el QR del carrusel y hace que la intro automática termine en el frame animado.
-- `Mostrar`: incluye el QR después del frame animado y hace que la intro automática termine en él. Es la opción
-  predeterminada.
+En **Manual**, **Mostrar** deja el QR en el carrusel y al final de la intro automática; es el valor predeterminado. **Ocultar** retira el QR del carrusel y hace que la intro automática termine en la pantalla animada.
 
 ### Status LED
 
-Controla qué señales muestra el pixel de estado:
+Esta opción controla qué avisos muestra el pixel de estado. La alerta roja de batería crítica permanece activa en todos los modos.
 
-| Opción           | Bluetooth | Mensajes | Batería crítica |
-| ---------------- | --------: | -------: | --------------: |
-| `Completo`       |        Sí |       Sí |              Sí |
-| `Solo Bluetooth` |        Sí |       No |              Sí |
-| `Solo mensajes`  |        No |       Sí |              Sí |
-| `Apagado`        |        No |       No |              Sí |
+| Modo | Bluetooth | Mensajes | Batería crítica |
+| --- | --- | --- | --- |
+| **Completo** | Sí | Sí | Sí |
+| **Solo Bluetooth** | Sí | No | Sí |
+| **Solo mensajes** | No | Sí | Sí |
+| **Apagado** | No | No | Sí |
 
-La alerta roja de batería crítica no puede deshabilitarse desde este menú.
+Con el modo predeterminado **Completo**, las señales son:
 
-### Acerca de
+| Señal | Significado |
+| --- | --- |
+| Dos destellos rojos cada 3 segundos | Batería presente al 5 % o menos, sin USB ni carga. Tiene prioridad sobre las demás señales. |
+| Azul rápido: 250 ms encendido y 250 ms apagado | Emparejamiento Bluetooth en curso. |
+| Dos destellos ámbar, una sola vez | Mensaje de canal recibido por LoRa. |
+| Cuatro destellos verdes, una sola vez | Mensaje directo recibido por LoRa. |
+| Verde tenue fijo | Teléfono conectado por Bluetooth. |
+| Pulso azul tenue cada 2 segundos | Bluetooth habilitado, sin teléfono conectado. |
+| Apagado | Bluetooth deshabilitado o el modo elegido oculta la señal actual. |
 
-Muestra automáticamente los créditos en español e inglés y finaliza con la versión de firmware y el commit corto. El
-texto vuelve a comenzar al llegar al final. Mantener pulsado `Volver` para regresar al menú principal.
+Las ráfagas de mensajes no se repiten. Una señal de mayor prioridad interrumpe temporalmente a las demás. Si deshabilitás Bluetooth desde Meshtastic, el pixel no muestra su estado aunque hayas elegido **Completo** o **Solo Bluetooth**.
 
-### Reproducir intro
+### Acerca de, intro y restauración
 
-Reproduce nuevamente la intro audiovisual sin desconectar Bluetooth ni bloquear un vínculo activo. Durante esos 12
-segundos las pulsaciones no interrumpen la secuencia. El bloqueo de pairing se aplica únicamente a la intro del arranque.
-Al terminar una reproducción manual, vuelve al frame Ekoparty animado en vez de cambiar al QR.
+**Acerca de** recorre automáticamente los créditos en español e inglés, la versión del firmware y el commit corto. Al terminar, vuelve a empezar. Para salir, seleccioná **Volver** y mantené pulsado el botón.
 
-### Restaurar
+**Reproducir intro** vuelve a mostrar la secuencia audiovisual, de unos 12 segundos. Las pulsaciones no la interrumpen y un vínculo Bluetooth activo sigue conectado. El bloqueo temporal del emparejamiento se aplica sólo a la intro del arranque. Al terminar la reproducción manual, vuelve a la pantalla animada Ekoparty, aunque el QR esté visible en el carrusel.
 
-Solicita confirmación y restaura únicamente las preferencias locales del badge:
+**Restaurar** pide confirmación y devuelve únicamente estas preferencias locales a sus valores iniciales: **Ojo**, backlights **Brillantes**, QR **Mostrar** y status LED **Completo**. No borra el nombre o propietario del nodo, los canales, las claves, los vínculos Bluetooth ni otras opciones Meshtastic; no equivale a un restablecimiento de fábrica.
 
-- animación `Ojo`;
-- backlights `Brillantes`;
-- manual `Mostrar`;
-- status LED en `Completo`.
+## Sonido y modo silencioso
 
-No borra el propietario, los canales, las claves, los vínculos Bluetooth ni el resto de la configuración Meshtastic. No
-es un factory reset.
+El buzzer se configura desde **Buzzer mode** en la configuración del dispositivo de la app Meshtastic. Los nombres pueden variar según la versión de la app:
 
-## 4. Significado del status LED
+| Modo | Qué se escucha |
+| --- | --- |
+| **All enabled** | Sonidos del sistema, respuesta al botón y notificaciones. |
+| **Disabled** | Silencio total. |
+| **Notifications only** | Notificaciones y alertas, sin respuesta al botón. |
+| **System only** | Sistema y botón, sin alertas de mensajes. |
+| **Direct message only** | Alertas de mensajes directos, sin respuesta al botón. |
 
-En modo `Completo`, el comportamiento es el siguiente:
+El menú **BADGE** no cambia el buzzer. Silenciarlo tampoco desactiva el pixel de estado: ambas funciones se configuran por separado. De fábrica, cada mensaje produce un aviso breve y ascendente, más agudo que el sonido de navegación, que no se repite. Un tono o **Nag timeout** configurado después desde Meshtastic puede cambiar ese comportamiento.
 
-| Señal                                          | Significado                                                                                |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Dos destellos rojos cortos cada 3 segundos     | Batería presente en 5 % o menos, sin USB y sin carga. Tiene prioridad sobre todo lo demás. |
-| Azul rápido, 250 ms encendido y 250 ms apagado | Pairing Bluetooth en curso.                                                                |
-| Dos flashes ámbar, una sola vez                | Mensaje broadcast recibido por LoRa.                                                       |
-| Cuatro flashes verdes, una sola vez            | Mensaje directo recibido por LoRa.                                                         |
-| Verde tenue fijo                               | Teléfono conectado por Bluetooth.                                                          |
-| Pulso azul tenue y corto cada 2 segundos       | Bluetooth habilitado, pero sin teléfono conectado.                                         |
-| Apagado                                        | Bluetooth deshabilitado, o el modo local no permite mostrar el estado actual.              |
+## Conocé más tu badge
 
-Las alertas de mensajes son ráfagas únicas; no se repiten. Una señal de mayor prioridad interrumpe temporalmente a las
-demás. Si Bluetooth está deshabilitado desde Meshtastic, no se muestra su estado aunque esté elegido `Completo` o
-`Solo Bluetooth`.
+El badge funciona como un nodo Meshtastic. Una pulsación corta recorre los frames de la OLED; si estaba apagada, la primera sólo la despierta. La [galería web de pantallas](https://marsfactory.github.io/ekoparty-badge-2026/#pantallas-meshtastic) muestra todos los ejemplos. Para funciones más avanzadas, consultá la [documentación oficial de Meshtastic](https://meshtastic.org/docs/).
 
-## 5. Conexión con Meshtastic
+| Pantalla | Qué muestra |
+| --- | --- |
+| **Home** | Batería, nodos conocidos, tiempo encendido y nombre del badge. |
+| **Messages** | Mensajes y acciones para responder con frases predefinidas. |
+| **Last Heard** | Nodos escuchados y tiempo desde su última señal. |
+| **Distance** | Distancia a nodos con posición conocida; `?` si falta el dato. |
+| **LoRa** | Región, preset, frecuencia, rol y uso del canal. |
+| **System** | Versión, tiempo encendido y estado del sistema y de la app. |
+| **Clock** | Hora, fecha y batería cuando hay una hora válida. |
 
-El badge viene preparado para el evento con estos valores principales:
+![Pantalla Home de Meshtastic en el badge](web/assets/mesh-base/home.png)
 
-- región LoRa `ANZ`, definida por la organización;
-- preset `MEDIUM_FAST`;
-- rol `CLIENT_MUTE`;
-- GPS y MQTT deshabilitados;
-- Message Bubbles habilitadas también en la OLED pequeña;
-- mensajes rápidos y ringtone propios de Ekoparty.
+## Configuraciones de LoRa, roles y mapa
 
-No modificar la región ni el preset salvo indicación de la organización: los nodos necesitan parámetros compatibles
-para comunicarse y la región debe respetar la normativa aplicable.
+El firmware del evento llega con región **`ANZ`**, preset de radio **`MEDIUM_FAST`**, rol **`CLIENT_MUTE`** y **3 saltos máximos**. La región `ANZ` selecciona la banda ISM que Meshtastic indica para Argentina. `MEDIUM_FAST` es el preset elegido para la red del evento en CABA; no es un canal.
 
-### Pairing Bluetooth
+De fábrica, el GPS figura como no presente y MQTT está deshabilitado. Las **Message Bubbles** están habilitadas para mostrar los mensajes en la OLED pequeña; las frases predefinidas y el tono de aviso son propios de Ekoparty.
 
-1. Esperar a que finalice la intro.
-2. En la aplicación Meshtastic, iniciar la conexión con el badge encontrado.
-3. Leer el PIN en la OLED. Durante el pairing se muestra sobre una pantalla negra para facilitar la lectura.
-4. Ingresarlo o confirmarlo en el teléfono.
-5. Comprobar que el status LED quede verde fijo.
+En la app de Android, abrí **Settings → LoRa** para ver región, preset y **Max Hops**. En otra provincia de Argentina, la región sigue siendo `ANZ`, pero el preset y los canales de la red pueden variar. En otro país, elegí la región permitida allí.
 
-Si la conexión falla, cancelar el intento en el teléfono y comenzar uno nuevo. Si existe un vínculo antiguo que impide
-conectar, olvidar el dispositivo desde los ajustes Bluetooth del teléfono y repetir el pairing.
+![Región ANZ y preset MEDIUM_FAST en Settings → LoRa](web/assets/app/lora-config.jpeg)
 
-### Mensajes
+En **Settings → Device configuration → Device** podés cambiar **Device Role**. **Client Mute** envía y recibe sin retransmitir mensajes ajenos; **Client** puede retransmitir cuando hace falta; **Router** se reserva para infraestructura bien ubicada; **Tracker** prioriza avisos de posición. Los roles especializados pueden cambiar el uso de la pantalla o Bluetooth.
 
-- Un mensaje de canal o broadcast se envía a todos los nodos que compartan la configuración correspondiente.
-- Un DM se dirige a un nodo concreto y depende de que ambos nodos hayan intercambiado su información y claves.
-- Los mensajes recibidos aparecen como bubbles en la OLED y, según la configuración elegida, activan buzzer y status LED.
+![Rol Client Mute en la configuración Device](web/assets/app/device-config.jpeg)
 
-LoRa funciona independientemente de que el teléfono permanezca conectado. La aplicación es la interfaz para escribir,
-leer el historial y modificar la configuración.
+La pestaña **Mesh Map** muestra nodos que comparten posición. Este badge no tiene GPS integrado: podés establecer una posición fija en **Settings → Device configuration → Position** o permitir que la app comparta la ubicación GPS del teléfono mientras está conectado. Compartir tu posición es opcional.
 
-## 6. Sonido y modo silencioso
+![Mapa de nodos en la aplicación Meshtastic](web/assets/app/map.jpeg)
 
-El buzzer se controla desde la configuración estándar del dispositivo en la aplicación Meshtastic. El campo suele
-aparecer como `Buzzer mode` y ofrece:
+Un **restablecimiento de fábrica de Meshtastic** borra tu configuración personal y vuelve a cargar los valores iniciales de esta compilación: `ANZ`, `MEDIUM_FAST`, `CLIENT_MUTE` y 3 saltos. Después podés modificarlos. **BADGE → Restaurar** sólo afecta las preferencias visuales del badge.
 
-| Modo                  | Comportamiento                                               |
-| --------------------- | ------------------------------------------------------------ |
-| `All enabled`         | Sonidos del sistema, feedback del botón y notificaciones.    |
-| `Disabled`            | Silencio total.                                              |
-| `Notifications only`  | Notificaciones y alertas, sin feedback del botón.            |
-| `System only`         | Sonidos del sistema y botón, sin alertas de mensajes.        |
-| `Direct message only` | Alertas sólo para mensajes directos, sin feedback del botón. |
+Más detalles: [LoRa](https://meshtastic.org/docs/configuration/radio/lora/), [roles](https://meshtastic.org/docs/configuration/radio/device/), [posición](https://meshtastic.org/docs/configuration/radio/position/) y [regiones por país](https://meshtastic.org/docs/configuration/region-by-country/).
 
-El menú local del badge no cambia el buzzer. Del mismo modo, silenciar el buzzer no desactiva las señales visuales del
-status LED; ambas funciones se configuran por separado.
+## Actualizar el firmware por UF2
 
-De fábrica, cada mensaje produce una única notificación ascendente y breve, más aguda que el feedback de navegación. La
-notificación no se repite; un ringtone o `Nag timeout` configurado previamente desde Meshtastic puede cambiar ese
-comportamiento.
+Descargá desde [Releases](https://github.com/marsfactory/ekoparty-badge-2026/releases) un archivo `.uf2` para **`ekoparty_badge_v1`**; el nombre de una release puede tener la forma `firmware-ekoparty_badge_v1-...uf2`. Si la release incluye `SHA256SUMS`, verificá la descarga antes de copiarla. Una actualización UF2 normal no requiere programador SWD.
 
-## 7. Alimentación y batería
+1. Apagá el badge con el interruptor en **OFF** y desconectá el USB-C si estaba conectado.
+2. Mantené presionado el botón DFU del dorso, rotulado `nRF_RESET`, y, sin soltarlo, conectá el USB-C a la computadora.
+3. Con el botón todavía presionado, mové el interruptor a **ON**. Mantenelo hasta que aparezca la unidad USB **`EKOBOOT`**.
+4. Soltá el botón y copiá el archivo `.uf2` a `EKOBOOT`.
+5. Esperá el reinicio automático y la intro. Abrí **BADGE → Acerca de** y comprobá la versión instalada.
 
-- El USB alimenta el badge y también permite actualizar el firmware.
-- Usar un cable y una fuente USB en buen estado.
-- El nivel de batería se muestra mediante Meshtastic; al llegar a 5 % o menos sin USB aparece la alerta roja del status LED.
-- Reducir consumo apagando los backlights, deshabilitando Bluetooth cuando no se use y dejando que la OLED se apague.
-- No transmitir con el sistema de antena dañado o desconectado.
+La unidad `EKOBOOT` puede desaparecer durante la copia: el bootloader desmonta el volumen al aceptar el firmware y reinicia el badge. Algunos gestores de archivos muestran entonces un error tardío como “No such file or directory”. Comprobá el resultado observando el arranque y la versión en **Acerca de**. Si `EKOBOOT` no aparece o el badge no inicia, seguí la [guía técnica de compilación y carga](BUILD.md).
 
-## 8. Actualizar el firmware por UF2
+## Conexión de antena externa
 
-Las versiones estables se publican en:
+De fábrica, una resistencia de **0 Ω en `R19`** actúa como puente entre la radio LoRa y la antena integrada del PCB. Para usar el conector IPEX con una antena externa:
 
-[Releases del Ekoparty Badge 2026](https://github.com/marsfactory/ekoparty-badge-2026/releases)
+1. Apagá el badge y retirá el cable USB-C y la batería 18650.
+2. Desoldá la resistencia de 0 Ω de `R19` y soldala en los pads `R21`. Así la señal LoRa se dirige al conector IPEX.
+3. Conectá la antena externa al IPEX **antes** de volver a colocar la batería o conectar el USB-C y encender el badge.
 
-Usar exclusivamente el archivo cuyo nombre contenga:
+**Importante:** no enciendas el badge sin una antena conectada. Después de mover el puente a `R21`, conectá siempre la antena externa antes de encenderlo.
 
-```text
-firmware-ekoparty_badge_v1-...uf2
-```
+![Detalle del PCB con el conector EXT_ANT y las posiciones R19 y R21](web/assets/external-antena-pcb.png)
 
-### Procedimiento
+![Esquema de la selección entre la antena integrada y el conector externo](web/assets/external-antena-sch.png)
 
-1. Descargar el UF2 y, cuando sea posible, comprobarlo con `SHA256SUMS`.
-2. Desconectar el badge del USB.
-3. Mantener pulsado el botón DFU rotulado `nRF_RESET` y volver a conectarlo.
-4. Soltar el botón cuando aparezca la unidad USB `EKOBOOT`.
-5. Copiar el UF2 dentro de `EKOBOOT`.
-6. Esperar el reinicio automático y la intro del badge.
-7. Abrir `BADGE → Acerca de` y comprobar la versión instalada.
+## Más información
 
-La unidad `EKOBOOT` puede desaparecer pocos segundos después de comenzar la copia. Es normal: el bootloader desmonta
-el volumen al aceptar el firmware y reinicia el badge. Algunos gestores de archivos pueden mostrar un error tardío como
-“No such file or directory” porque intentan consultar el archivo después de que la unidad ya se desmontó. Confirmar el
-resultado observando el arranque y la versión en `Acerca de`.
+- [Guía web completa e imprimible](https://marsfactory.github.io/ekoparty-badge-2026/): opciones, señales del pixel de estado, sonido, batería, problemas frecuentes y actualización UF2.
+- [Versiones del firmware](https://github.com/marsfactory/ekoparty-badge-2026/releases).
+- [Compilación y carga](BUILD.md).
+- [Pinmap y hardware](../badge-hardware/PIN-MAP.md).
+- [Mesh Argentina](https://mesharg.com.ar/) y su [grupo de Telegram](https://t.me/meshtastic_argentina) para aprender más y resolver dudas sobre Meshtastic.
 
-Una actualización UF2 normal no requiere el programador SWD. Si `EKOBOOT` no aparece o el badge no arranca, seguir la
-guía técnica de compilación y carga: [BUILD.md](BUILD.md).
+## Créditos
 
-## 9. Problemas frecuentes
+Este badge fue creado en el marco de la Ekoparty 2026 por el equipo de desarrollo:
 
-### La pantalla está apagada
+- **Diseño de hardware:** [Lucas Leal](https://www.instagram.com/lucas.__.leal/).
+- **Identidad visual y adaptación de firmware:** [Nicolas Restbergs, a.k.a. Fabrica Marciana](https://fabricamarciana.com/).
+- **Concepto y coordinación:** [Jorge Crowe, a.k.a. Monstruo Midi](https://www.jcrowe.xyz/).
 
-Hacer una pulsación corta para despertarla. La primera pulsación se consume en el encendido; hacer otra para avanzar de
-frame. Si no responde, conectar USB y volver a probar.
-
-### No aparece el badge en la aplicación
-
-- Esperar a que termine la intro.
-- Confirmar que Bluetooth esté habilitado en el teléfono y en Meshtastic.
-- Acercar el teléfono al badge.
-- Olvidar un vínculo Bluetooth anterior y repetir el pairing.
-- Reiniciar la aplicación antes de modificar configuraciones avanzadas.
-
-### No llegan mensajes LoRa
-
-- Confirmar que ambos nodos usen región, preset y canal compatibles.
-- Esperar el intercambio inicial de información de nodos antes de probar un DM.
-- Probar primero un mensaje broadcast.
-- Alejar el badge de fuentes intensas de interferencia y comprobar el estado físico de la antena.
-
-### No suena el buzzer
-
-Revisar `Buzzer mode` en la aplicación. `Disabled` silencia todo, `System only` omite mensajes y `Direct message only`
-omite los mensajes broadcast.
-
-### Los LEDs decorativos no encienden
-
-Abrir `BADGE → Backlights` y elegir `Tenues` o `Brillantes`. El status LED es independiente y puede continuar funcionando
-aunque los seis backlights estén apagados.
-
-### El status LED no muestra Bluetooth o mensajes
-
-Revisar `BADGE → Status LED`. `Solo Bluetooth`, `Solo mensajes` y `Apagado` filtran señales de forma intencional. La
-alerta roja de batería crítica continúa activa en todos los modos.
-
-### EKOBOOT desaparece durante la copia
-
-Normalmente indica que el UF2 fue aceptado. Esperar el reinicio y comprobar la versión en `Acerca de`. Si el badge vuelve
-siempre a EKOBOOT y nunca inicia la aplicación, descargar de nuevo el UF2 correcto de badge v1 y verificar su checksum.
-
-## 10. Alcance de las restauraciones
-
-Hay acciones con efectos muy diferentes:
-
-| Acción                                | Qué modifica                                                                                |
-| ------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `BADGE → Restaurar`                   | Sólo animación, backlights, visibilidad del manual y modo del status LED.                  |
-| Olvidar el dispositivo en el teléfono | Sólo el vínculo Bluetooth guardado en el teléfono.                                          |
-| Factory reset de Meshtastic           | Configuración, identidad y posiblemente claves del nodo; no usarlo como solución rutinaria. |
-| Actualización UF2                     | Reemplaza la aplicación y normalmente conserva los datos locales.                           |
-
-Antes de hacer un factory reset, guardar canales y configuración importantes. La regeneración de identidad o claves
-puede impedir temporalmente los mensajes directos hasta que los nodos vuelvan a intercambiar información.
-
-## 11. Más información
-
-- Versiones y checksums: [Releases](https://github.com/marsfactory/ekoparty-badge-2026/releases).
-- Compilación y primer flash: [BUILD.md](BUILD.md).
-- Conexiones del PCB: [PIN-MAP.md](../badge-hardware/PIN-MAP.md).
-
-Los créditos completos del equipo pueden consultarse directamente en `BADGE → Acerca de`.
+Buenos Aires, 2026.

@@ -3,9 +3,11 @@ pio
 .pio-docker
 pio.tar
 web
+!docs/web/
 web.tar
 
 .vscode/
+/.aws
 *.code-workspace
 
 .idea
