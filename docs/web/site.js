@@ -3,6 +3,37 @@ for (const button of printButtons) {
   button.addEventListener('click', () => window.print());
 }
 
+const menuToggle = document.querySelector('.menu-toggle');
+const menu = document.querySelector('#guide-menu');
+const menuBackdrop = document.querySelector('.menu-backdrop');
+const mobileMenu = window.matchMedia('(max-width: 900px)');
+
+function setMenuOpen(open) {
+  const isOpen = open && mobileMenu.matches;
+  document.body.classList.toggle('menu-open', isOpen);
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú de capítulos' : 'Abrir menú de capítulos');
+  menuBackdrop.hidden = !isOpen;
+  menu.inert = mobileMenu.matches && !isOpen;
+}
+
+menuToggle.addEventListener('click', () => setMenuOpen(!document.body.classList.contains('menu-open')));
+menuBackdrop.addEventListener('click', () => {
+  setMenuOpen(false);
+  menuToggle.focus();
+});
+menu.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', () => setMenuOpen(false));
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
+    setMenuOpen(false);
+    menuToggle.focus();
+  }
+});
+mobileMenu.addEventListener('change', () => setMenuOpen(false));
+setMenuOpen(false);
+
 const printDetails = [...document.querySelectorAll('details')];
 let openDetailsBeforePrint = [];
 window.addEventListener('beforeprint', () => {

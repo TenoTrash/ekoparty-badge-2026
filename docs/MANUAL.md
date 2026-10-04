@@ -6,7 +6,7 @@ El Ekoparty Badge es un nodo Meshtastic con radio LoRa. Se conecta al teléfono 
 
 ![Ilustración del Ekoparty Badge](web/assets/PORTADA.png)
 
-## Conocé tu badge
+## Conocé el badge
 
 El PCB `ekoparty_badge_v1` usa un nRF52840, radio SX1262, pantalla OLED, un botón de navegación, USB-C, buzzer, seis LEDs traseros y un pixel independiente de estado. Se alimenta con una batería recargable 18650 o por USB.
 
@@ -246,6 +246,23 @@ De fábrica, una resistencia de **0 Ω en `R19`** actúa como puente entre la ra
 - [Compilación y carga](BUILD.md).
 - [Pinmap y hardware](../badge-hardware/PIN-MAP.md).
 - [Mesh Argentina](https://mesharg.com.ar/) y su [grupo de Telegram](https://t.me/meshtastic_argentina) para aprender más y resolver dudas sobre Meshtastic.
+
+## Especificaciones técnicas
+
+Estos son los componentes principales del PCB `ekoparty_badge_v1`:
+
+- **Microcontrolador:** Nordic `nRF52840-QIAA-R`, encargado del firmware y la conexión Bluetooth.
+- **Radio LoRa:** módulo Ai-Thinker `Ra-01SH` con transceptor Semtech `SX1262`.
+- **Pantalla:** OLED `HS96L03W2C03` conectada por I²C.
+- **Iluminación:** seis LEDs traseros `SK6812mini-012` y un séptimo pixel independiente para el estado.
+- **Sonido:** buzzer piezoeléctrico pasivo.
+- **Alimentación:** batería recargable 18650 o puerto USB-C.
+- **Carga y protección:** cargador `TP4056` y protección de batería `DW01` con MOSFET `8205A`.
+- **Regulación:** `AP2112K-3.3` para la línea de 3,3 V.
+- **Antenas:** antena Bluetooth `RFANT5220110A0T`, antena LoRa integrada en el PCB y conector IPEX para una externa.
+- **Controles y programación:** botón de navegación, botón DFU, interruptor OFF/ON y conector SWD.
+
+Para el detalle eléctrico, consultá el [esquema del PCB](../badge-hardware/SCH_Schematic1_2026-09-11.pdf) y el [mapa de pines](../badge-hardware/PIN-MAP.md).
 
 ## Créditos
 

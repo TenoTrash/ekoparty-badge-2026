@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0b0e12">
     <meta name="description" content="Guía del Ekoparty Badge 2026: primeros pasos, Meshtastic, Bluetooth, mensajes desde el teléfono o el badge y opciones propias del dispositivo.">
     <title>Manual de uso · Ekoparty Badge 2026</title>
-    <link rel="icon" type="image/png" href="logo-eko.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="site.css">
     <script src="site.js" defer></script>
   </head>
@@ -30,8 +30,12 @@
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 15h12v6H6zM18 12h1"/></svg>
           <span>Imprimir / PDF</span>
         </button>
+        <button class="menu-toggle" type="button" aria-label="Abrir menú de capítulos" aria-controls="guide-menu" aria-expanded="false">
+          <span class="menu-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
       </div>
     </header>
+    <button class="menu-backdrop" type="button" aria-label="Cerrar menú de capítulos" hidden></button>
 
     <main id="contenido">
       <section class="hero" id="inicio" aria-labelledby="hero-title">
@@ -55,7 +59,7 @@
       </section>
 
       <div class="guide-shell page-shell">
-        <aside class="contents" aria-label="Índice de la guía">
+        <aside class="contents" id="guide-menu" aria-label="Índice de la guía">
           <div class="contents-inner">
             <p class="contents-label">EN ESTA GUÍA</p>
             <nav aria-label="Capítulos">
@@ -71,7 +75,8 @@
               <a href="#mantenimiento">10 <span>Energía y actualización</span></a>
               <a href="#antena-externa">11 <span>Conexión de antena externa</span></a>
               <a href="#ayuda">12 <span>Si algo falla</span></a>
-              <a href="#creditos">13 <span>Créditos</span></a>
+              <a href="#especificaciones">13 <span>Especificaciones técnicas</span></a>
+              <a href="#creditos">14 <span>Créditos</span></a>
             </nav>
             <div class="contents-foot">¿Querés leer sin conexión?<br><button type="button" data-print>Imprimir o guardar PDF ↗</button></div>
           </div>
@@ -272,8 +277,27 @@
             <div class="end-card"><div><span class="small-label">SEGUÍ EXPLORANDO</span><h3>El código, las versiones y el hardware están abiertos.</h3><p>Este badge usa una adaptación del firmware Meshtastic para el PCB Ekoparty Badge v1.</p><p>Para aprender más y sacarte dudas sobre Meshtastic, visitá <a href="https://mesharg.com.ar/" target="_blank" rel="noopener noreferrer">Mesh Argentina</a> y su grupo de Telegram.</p></div><div class="end-links"><a href="https://github.com/marsfactory/ekoparty-badge-2026" target="_blank" rel="noopener noreferrer">Ver el repositorio ↗</a><a href="https://github.com/marsfactory/ekoparty-badge-2026/releases" target="_blank" rel="noopener noreferrer">Descargar firmware ↗</a><a href="https://github.com/marsfactory/ekoparty-badge-2026/blob/main/badge-hardware/PIN-MAP.md" target="_blank" rel="noopener noreferrer">Pinmap y hardware ↗</a><a href="https://t.me/meshtastic_argentina" target="_blank" rel="noopener noreferrer">Grupo de Telegram ↗</a></div></div>
           </section>
 
+          <section class="chapter" id="especificaciones" aria-labelledby="especificaciones-title">
+            <div class="chapter-heading"><span class="chapter-number">13 / HARDWARE</span><h2 id="especificaciones-title">Especificaciones técnicas</h2><p>Estos son los componentes principales del PCB <code>ekoparty_badge_v1</code>.</p></div>
+            <div class="technical-specs">
+              <ul class="technical-list">
+                <li><strong>Microcontrolador:</strong> Nordic <code>nRF52840-QIAA-R</code>, encargado del firmware y la conexión Bluetooth.</li>
+                <li><strong>Radio LoRa:</strong> módulo Ai-Thinker <code>Ra-01SH</code> con transceptor Semtech <code>SX1262</code>.</li>
+                <li><strong>Pantalla:</strong> OLED <code>HS96L03W2C03</code> conectada por I²C.</li>
+                <li><strong>Iluminación:</strong> seis LEDs traseros <code>SK6812mini-012</code> y un séptimo pixel independiente para el estado.</li>
+                <li><strong>Sonido:</strong> buzzer piezoeléctrico pasivo.</li>
+                <li><strong>Alimentación:</strong> batería recargable 18650 o puerto USB-C.</li>
+                <li><strong>Carga y protección:</strong> cargador <code>TP4056</code> y protección de batería <code>DW01</code> con MOSFET <code>8205A</code>.</li>
+                <li><strong>Regulación:</strong> <code>AP2112K-3.3</code> para la línea de 3,3 V.</li>
+                <li><strong>Antenas:</strong> antena Bluetooth <code>RFANT5220110A0T</code>, antena LoRa integrada en el PCB y conector IPEX para una externa.</li>
+                <li><strong>Controles y programación:</strong> botón de navegación, botón DFU, interruptor OFF/ON y conector SWD.</li>
+              </ul>
+              <p class="technical-source">Detalle eléctrico: <a href="https://github.com/marsfactory/ekoparty-badge-2026/blob/main/badge-hardware/SCH_Schematic1_2026-09-11.pdf" target="_blank" rel="noopener noreferrer">esquema del PCB</a> y <a href="https://github.com/marsfactory/ekoparty-badge-2026/blob/main/badge-hardware/PIN-MAP.md" target="_blank" rel="noopener noreferrer">mapa de pines</a>.</p>
+            </div>
+          </section>
+
           <section class="chapter" id="creditos" aria-labelledby="creditos-title">
-            <div class="chapter-heading"><span class="chapter-number">13 / CRÉDITOS</span><h2 id="creditos-title">Créditos</h2><p>Este badge fue creado en el marco de la Ekoparty 2026 por el equipo de desarrollo.</p></div>
+            <div class="chapter-heading"><span class="chapter-number">14 / CRÉDITOS</span><h2 id="creditos-title">Créditos</h2><p>Este badge fue creado en el marco de la Ekoparty 2026 por el equipo de desarrollo.</p></div>
             <div class="credits-grid">
               <article class="credit-card"><span class="credit-role">Diseño de hardware</span><h3>Lucas Leal</h3><a href="https://www.instagram.com/lucas.__.leal/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></article>
               <article class="credit-card"><span class="credit-role">Identidad visual y adaptación de firmware</span><h3>Nicolas Restbergs</h3><p>a.k.a. Fabrica Marciana</p><a href="https://fabricamarciana.com/" target="_blank" rel="noopener noreferrer">Fabrica Marciana ↗</a></article>
