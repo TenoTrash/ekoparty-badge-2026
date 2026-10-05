@@ -400,7 +400,7 @@ bool MeshService::trySendPosition(NodeNum dest, bool wantReplies)
     assert(node);
 
     if (nodeDB->hasValidPosition(node)) {
-#if HAS_GPS && !MESHTASTIC_EXCLUDE_GPS
+#if MESHTASTIC_ENABLE_POSITION_MODULE
         if (positionModule) {
             if (!config.position.fixed_position && !nodeDB->hasLocalPositionSinceBoot()) {
                 LOG_DEBUG("Skip position ping; no fresh position since boot");

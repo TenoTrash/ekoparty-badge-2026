@@ -5,6 +5,8 @@ Firmware del badge oficial del evento Ekoparty 2026, basado en [Meshtastic Firmw
 ![Ilustración del Ekoparty Badge](./docs/web/assets/PORTADA.png)
 
 > Consultá la [guía web](https://marsfactory.github.io/ekoparty-badge-2026/) para conocer rápidamente las funciones del badge.
+>
+> Última versión estable: [Ekoparty Badge v1.0.4](https://github.com/marsfactory/ekoparty-badge-2026/releases/tag/ekoparty-badge-v1.0.4). Mantiene el GPS físico excluido y habilita la recepción de posiciones para que el frame Distance funcione con una posición fija o con la ubicación del teléfono.
 
 ## Documentación
 
@@ -26,7 +28,7 @@ cd ekoparty-badge-2026
 scripts/build-ekoparty.sh ekoparty_badge_v1
 ```
 
-El UF2 queda en `dist/ekoparty_badge_v1/latest-ekoparty_badge_v1.uf2`. La [guía de compilación y carga](docs/BUILD.md) explica las dependencias, el primer flash SWD con [EKOBOOT](https://github.com/marsfactory/eko-bootloader) y la verificación de imágenes.
+El UF2 queda en `dist/ekoparty_badge_v1/latest-ekoparty_badge_v1.uf2`. La [guía de compilación y carga](docs/BUILD.md) explica las dependencias, el primer flash SWD con [EKOBOOT](https://github.com/marsfactory/eko-bootloader), la descarga de la [release v1.0.4](https://github.com/marsfactory/ekoparty-badge-2026/releases/tag/ekoparty-badge-v1.0.4) y la verificación de imágenes.
 
 Para ubicar los módulos propios y portar el badge a una versión nueva de Meshtastic, consultá las [notas de desarrollo](docs/DEV_NOTES.md).
 

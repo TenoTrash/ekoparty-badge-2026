@@ -56,7 +56,7 @@
 #include <RNG.h>      // CryptRNG, the seeded CSPRNG used as fallback for the session passkey
 #include <Throttle.h> // rollover-safe elapsed-time checks for the session passkey
 
-#if MESHTASTIC_EXCLUDE_GPS
+#if MESHTASTIC_ENABLE_POSITION_MODULE
 #include "modules/PositionModule.h"
 #endif
 
@@ -603,8 +603,11 @@ bool AdminModule::handleReceivedProtobuf(const meshtastic_MeshPacket &mp, meshta
 #if !MESHTASTIC_EXCLUDE_GPS
         if (gps != nullptr)
             gps->enable();
+#endif
+#if MESHTASTIC_ENABLE_POSITION_MODULE
         // Send our new fixed position to the mesh for good measure
-        positionModule->sendOurPosition();
+        if (positionModule)
+            positionModule->sendOurPosition();
 #endif
         break;
     }

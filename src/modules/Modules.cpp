@@ -34,7 +34,7 @@
 #if !MESHTASTIC_EXCLUDE_BEACON
 #include "modules/MeshBeaconModule.h"
 #endif
-#if !MESHTASTIC_EXCLUDE_GPS
+#if MESHTASTIC_ENABLE_POSITION_MODULE
 #include "modules/PositionModule.h"
 #endif
 #if !MESHTASTIC_EXCLUDE_REMOTEHARDWARE
@@ -163,7 +163,7 @@ void setupModules()
     meshBeaconBroadcastModule = new MeshBeaconBroadcastModule();
     meshBeaconListenerModule = new MeshBeaconListenerModule();
 #endif
-#if !MESHTASTIC_EXCLUDE_GPS
+#if MESHTASTIC_ENABLE_POSITION_MODULE
     positionModule = new PositionModule();
 #endif
 #if !MESHTASTIC_EXCLUDE_WAYPOINT

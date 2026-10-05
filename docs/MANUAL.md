@@ -2,7 +2,7 @@
 
 El Ekoparty Badge es un nodo Meshtastic con radio LoRa. Se conecta al teléfono por Bluetooth para escribir mensajes y configurar el dispositivo, pero sigue recibiendo y enviando mensajes por LoRa sin el teléfono conectado.
 
-**[Abrir la guía web completa](https://marsfactory.github.io/ekoparty-badge-2026/)** · [Firmware y versiones](https://github.com/marsfactory/ekoparty-badge-2026/releases) · [Código del proyecto](https://github.com/marsfactory/ekoparty-badge-2026)
+**[Abrir la guía web completa](https://marsfactory.github.io/ekoparty-badge-2026/)** · [Firmware v1.0.4](https://github.com/marsfactory/ekoparty-badge-2026/releases/tag/ekoparty-badge-v1.0.4) · [Código del proyecto](https://github.com/marsfactory/ekoparty-badge-2026)
 
 ![Ilustración del Ekoparty Badge](web/assets/PORTADA.png)
 
@@ -184,7 +184,7 @@ El badge funciona como un nodo Meshtastic. Una pulsación corta recorre los fram
 | **Home** | Batería, nodos conocidos, tiempo encendido y nombre del badge. |
 | **Messages** | Mensajes y acciones para responder con frases predefinidas. |
 | **Last Heard** | Nodos escuchados y tiempo desde su última señal. |
-| **Distance** | Distancia a nodos con posición conocida; `?` si falta el dato. |
+| **Distance** | Distancia a nodos con posición conocida cuando el badge también conoce su posición; `?` si falta alguno de los datos. |
 | **LoRa** | Región, preset, frecuencia, rol y uso del canal. |
 | **System** | Versión, tiempo encendido y estado del sistema y de la app. |
 | **Clock** | Hora, fecha y batería cuando hay una hora válida. |
@@ -195,7 +195,7 @@ El badge funciona como un nodo Meshtastic. Una pulsación corta recorre los fram
 
 El firmware del evento llega con región **`ANZ`**, preset de radio **`MEDIUM_FAST`**, rol **`CLIENT_MUTE`** y **3 saltos máximos**. La región `ANZ` selecciona la banda ISM que Meshtastic indica para Argentina. `MEDIUM_FAST` es el preset elegido para la red del evento en CABA; no es un canal.
 
-De fábrica, el GPS figura como no presente y MQTT está deshabilitado. Las **Message Bubbles** están habilitadas para mostrar los mensajes en la OLED pequeña; las frases predefinidas y el tono de aviso son propios de Ekoparty.
+De fábrica, el GPS figura como no presente y MQTT está deshabilitado. El módulo de posición permanece activo para recibir coordenadas de la mesh y usar una posición fija o la ubicación del teléfono. Las **Message Bubbles** están habilitadas para mostrar los mensajes en la OLED pequeña; las frases predefinidas y el tono de aviso son propios de Ekoparty.
 
 En la app de Android, abrí **Settings → LoRa** para ver región, preset y **Max Hops**. En otra provincia de Argentina, la región sigue siendo `ANZ`, pero el preset y los canales de la red pueden variar. En otro país, elegí la región permitida allí.
 
@@ -205,7 +205,7 @@ En **Settings → Device configuration → Device** podés cambiar **Device Role
 
 ![Rol Client Mute en la configuración Device](web/assets/app/device-config.jpeg)
 
-La pestaña **Mesh Map** muestra nodos que comparten posición. Este badge no tiene GPS integrado: podés establecer una posición fija en **Settings → Device configuration → Position** o permitir que la app comparta la ubicación GPS del teléfono mientras está conectado. Compartir tu posición es opcional.
+La pestaña **Mesh Map** muestra nodos que comparten posición. Este badge no tiene GPS integrado: podés establecer una posición fija en **Settings → Device configuration → Position** o permitir que la app comparta la ubicación GPS del teléfono mientras está conectado. Cuando el badge conoce su posición y la de otro nodo, el frame **Distance** calcula la distancia entre ambos. Compartir tu posición y elegir su precisión es opcional; el firmware no lo fuerza en el canal primario.
 
 ![Mapa de nodos en la aplicación Meshtastic](web/assets/app/map.jpeg)
 
@@ -215,7 +215,7 @@ Más detalles: [LoRa](https://meshtastic.org/docs/configuration/radio/lora/), [r
 
 ## Actualizar el firmware por UF2
 
-Descargá desde [Releases](https://github.com/marsfactory/ekoparty-badge-2026/releases) un archivo `.uf2` para **`ekoparty_badge_v1`**; el nombre de una release puede tener la forma `firmware-ekoparty_badge_v1-...uf2`. Si la release incluye `SHA256SUMS`, verificá la descarga antes de copiarla. Una actualización UF2 normal no requiere programador SWD.
+Descargá desde la [release v1.0.4](https://github.com/marsfactory/ekoparty-badge-2026/releases/tag/ekoparty-badge-v1.0.4) el archivo `.uf2` para **`ekoparty_badge_v1`**; su nombre tiene la forma `firmware-ekoparty_badge_v1-...uf2`. Verificá la descarga con `SHA256SUMS` antes de copiarla. Una actualización UF2 normal no requiere programador SWD.
 
 1. Apagá el badge con el interruptor en **OFF** y desconectá el USB-C si estaba conectado.
 2. Mantené presionado el botón DFU del dorso, rotulado `nRF_RESET`, y, sin soltarlo, conectá el USB-C a la computadora.
@@ -242,7 +242,7 @@ De fábrica, una resistencia de **0 Ω en `R19`** actúa como puente entre la ra
 ## Más información
 
 - [Guía web completa e imprimible](https://marsfactory.github.io/ekoparty-badge-2026/): opciones, señales del pixel de estado, sonido, batería, problemas frecuentes y actualización UF2.
-- [Versiones del firmware](https://github.com/marsfactory/ekoparty-badge-2026/releases).
+- [Firmware estable v1.0.4](https://github.com/marsfactory/ekoparty-badge-2026/releases/tag/ekoparty-badge-v1.0.4) y [todas las versiones](https://github.com/marsfactory/ekoparty-badge-2026/releases).
 - [Compilación y carga](BUILD.md).
 - [Pinmap y hardware](../badge-hardware/PIN-MAP.md).
 - [Mesh Argentina](https://mesharg.com.ar/) y su [grupo de Telegram](https://t.me/meshtastic_argentina) para aprender más y resolver dudas sobre Meshtastic.

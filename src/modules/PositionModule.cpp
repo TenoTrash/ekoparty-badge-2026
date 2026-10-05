@@ -1,9 +1,11 @@
-#if !MESHTASTIC_EXCLUDE_GPS
-#include "PositionModule.h"
+#include "configuration.h"
+
+#if MESHTASTIC_ENABLE_POSITION_MODULE
 #include "Default.h"
 #include "GPS.h"
 #include "MeshService.h"
 #include "NodeDB.h"
+#include "PositionModule.h"
 #include "PositionPrecision.h"
 #include "Router.h"
 #include "TransmitHistory.h"
@@ -718,4 +720,4 @@ void PositionModule::handleNewPosition()
     }
 }
 
-#endif
+#endif // MESHTASTIC_ENABLE_POSITION_MODULE

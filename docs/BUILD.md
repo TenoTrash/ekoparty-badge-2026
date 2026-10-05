@@ -2,6 +2,8 @@
 
 Este repositorio distribuye únicamente el target `ekoparty_badge_v1`. El PCB usa un nRF52840 discreto, SoftDevice S140 7.3.0 y [EKOBOOT](https://github.com/marsfactory/eko-bootloader). La aplicación se enlaza desde `0x27000`.
 
+La versión estable actual es [Ekoparty Badge v1.0.4](https://github.com/marsfactory/ekoparty-badge-2026/releases/tag/ekoparty-badge-v1.0.4).
+
 ## Requisitos
 
 - Git con submódulos, Python 3 y [PlatformIO Core](https://docs.platformio.org/en/latest/core/installation/index.html).
@@ -16,7 +18,7 @@ cd ekoparty-badge-2026
 scripts/build-ekoparty.sh ekoparty_badge_v1
 ```
 
-El script aplica `config/userPrefs.ekoparty.jsonc` durante la compilación y restaura `userPrefs.jsonc` al terminar. El perfil fija `ANZ`, `MEDIUM_FAST` y `CLIENT_MUTE`. Los artefactos y `BUILD_INFO.txt` quedan en `dist/ekoparty_badge_v1/`; usar el UF2 `latest-ekoparty_badge_v1.uf2` para USB. Una release oficial contiene archivos con el commit incluido en el nombre y un `SHA256SUMS`.
+El script aplica `config/userPrefs.ekoparty.jsonc` durante la compilación y restaura `userPrefs.jsonc` al terminar. El perfil fija `ANZ`, `MEDIUM_FAST` y `CLIENT_MUTE`. El target excluye el hardware GPS, pero incluye PositionModule para recibir posiciones, usar una posición fija o la ubicación del teléfono y alimentar el frame Distance. Los artefactos y `BUILD_INFO.txt` quedan en `dist/ekoparty_badge_v1/`; usar el UF2 `latest-ekoparty_badge_v1.uf2` para USB. Una release oficial contiene archivos con el commit incluido en el nombre y un `SHA256SUMS`.
 
 ## Imagen inicial por SWD
 
